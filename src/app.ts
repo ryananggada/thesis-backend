@@ -5,6 +5,8 @@ import { createConnection } from 'typeorm';
 
 import userRoute from './routes/User';
 import profileRoute from './routes/Profile';
+import medicineRoute from './routes/Medicine';
+import symptomRoute from './routes/Symptom';
 
 const PORT = 8989;
 
@@ -16,6 +18,8 @@ app.set('json spaces', 2);
 
 app.use('/user', userRoute);
 app.use('/profile', profileRoute);
+app.use('/medicine', medicineRoute);
+app.use('/symptom', symptomRoute);
 
 createConnection()
   .then(async () => {
