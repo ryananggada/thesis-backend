@@ -10,7 +10,9 @@ router.get('/:id', async (req, res) => {
     const user = await User.findOne({ where: { id: req.params.id } });
     return res.json(user);
   } catch (error) {
-    return res.status(500).json(error);
+    return res
+      .status(500)
+      .json({ error: 'Get user by ID failed, something went wrong.' });
   }
 });
 
@@ -42,7 +44,9 @@ router.post('/register', async (req, res) => {
     await profile.save();
     return res.status(201).json(user);
   } catch (error) {
-    return res.status(500).json(error);
+    return res
+      .status(500)
+      .json({ error: 'Registering user failed, something went wrong.' });
   }
 });
 
@@ -56,15 +60,17 @@ router.post('/login', async (req, res) => {
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (passwordMatch) {
-        res.json({ valid: true });
+        return res.json({ valid: true, message: 'Correct user credential.' });
       } else {
-        res.json({ valid: false });
+        return res.json({ valid: false, message: 'Wrong password!' });
       }
     } else {
-      res.json({ valid: false });
+      return res.json({ valid: false, messsage: 'User not found!' });
     }
   } catch (error) {
-    return res.status(500).json(error);
+    return res
+      .status(500)
+      .json({ error: 'Whole login function failed, something went wrong.' });
   }
 });
 
