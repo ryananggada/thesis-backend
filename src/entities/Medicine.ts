@@ -23,7 +23,7 @@ export class Medicine extends BaseEntity {
   @Column({ nullable: false })
   price!: number;
 
-  @Column({ nullable: false })
+  @Column('text', { nullable: false })
   description!: string;
 
   @Column({ nullable: false })

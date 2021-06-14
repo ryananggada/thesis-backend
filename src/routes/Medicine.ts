@@ -1,5 +1,5 @@
 import express from 'express';
-import { In, Not } from 'typeorm';
+import { In, Like, Not } from 'typeorm';
 import { Medicine } from '../entities/Medicine';
 import { Symptom } from '../entities/Symptom';
 
@@ -44,9 +44,12 @@ router.post('/check', async (req, res) => {
       });
       const medicines = await Medicine.find({
         relations: ['symptom'],
-        where: { symptom: { id: In(symptomsId) }, indication: Not(indication) },
+        where: {
+          symptom: { id: In(symptomsId) },
+          indication: Not(Like(`%${indication}%`)),
+        },
       });
-      return res.json(medicines);
+      return res.status(201).json(medicines);
     } else {
       return res.json({ message: 'Not found' });
     }

@@ -7,6 +7,8 @@ import userRoute from './routes/User';
 import profileRoute from './routes/Profile';
 import medicineRoute from './routes/Medicine';
 import symptomRoute from './routes/Symptom';
+import shoppingCartRoute from './routes/ShoppingCart';
+import transactionRoute from './routes/Transaction';
 
 const PORT = 8989;
 
@@ -20,6 +22,8 @@ app.use('/user', userRoute);
 app.use('/profile', profileRoute);
 app.use('/medicine', medicineRoute);
 app.use('/symptom', symptomRoute);
+app.use('/shoppingcart', shoppingCartRoute);
+app.use('/transaction', transactionRoute);
 
 createConnection()
   .then(async () => {
