@@ -42,7 +42,7 @@ router.post('/register', async (req, res) => {
     });
     profile.user = user;
     await profile.save();
-    return res.status(201).json(user);
+    return res.status(201).json({ user, status: 'User successfully created!' });
   } catch (error) {
     return res
       .status(500)
@@ -54,13 +54,24 @@ router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ where: { username: username } });
+    const user = await User.findOne({
+      relations: ['profile'],
+      where: { username: username },
+    });
+    const userPass = await User.findOne({
+      select: ['password'],
+      where: { username: username },
+    });
 
-    if (user) {
-      const passwordMatch = await bcrypt.compare(password, user.password);
+    if (user && userPass) {
+      const passwordMatch = await bcrypt.compare(password, userPass.password!);
 
       if (passwordMatch) {
-        return res.json({ valid: true, message: 'Correct user credential.' });
+        return res.json({
+          valid: true,
+          message: 'Correct user credential.',
+          user,
+        });
       } else {
         return res.json({ valid: false, message: 'Wrong password!' });
       }

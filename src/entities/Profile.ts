@@ -5,8 +5,6 @@ import {
   Column,
   OneToOne,
   JoinColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './User';
 
@@ -41,10 +39,4 @@ export class Profile extends BaseEntity {
   @OneToOne(() => User, { cascade: true })
   @JoinColumn()
   user!: User;
-
-  @CreateDateColumn()
-  created_at!: Date;
-
-  @UpdateDateColumn()
-  updated_at!: Date;
 }

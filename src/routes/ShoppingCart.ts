@@ -22,10 +22,29 @@ router.delete('/:id', async (req, res) => {
     const shoppingcart = await ShoppingCart.delete({
       id: Number(req.params.id),
     });
-    return res.json(shoppingcart);
+    return res.json({
+      message: 'Shopping cart have been deleted by ID.',
+      shoppingcart,
+    });
   } catch (error) {
     return res.status(500).json({
       error: 'Delete shopping cart by ID failed, something went wrong.',
+    });
+  }
+});
+
+router.delete('/user/:id', async (req, res) => {
+  try {
+    const shoppingcart = await ShoppingCart.delete({
+      user: { id: Number(req.params.id) },
+    });
+    return res.json({
+      message: 'Shopping cart have been deleted by user ID.',
+      shoppingcart,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Delete shopping cart by user ID failed, something went wrong.',
     });
   }
 });
@@ -34,11 +53,25 @@ router.post('/add', async (req, res) => {
   const { user_id, medicine_id } = req.body;
 
   try {
-    const shoppingcart = await ShoppingCart.insert({
-      user: { id: user_id },
-      medicine: { id: medicine_id },
+    const repeatItem = await ShoppingCart.findOne({
+      where: { user: { id: user_id }, medicine: { id: medicine_id } },
     });
-    return res.json(shoppingcart);
+
+    if (!repeatItem) {
+      const shoppingcart = await ShoppingCart.insert({
+        user: { id: user_id },
+        medicine: { id: medicine_id },
+      });
+
+      return res.status(201).json({
+        message: 'Successfully added to shopping cart.',
+        shoppingcart,
+      });
+    }
+
+    return res.json({
+      error: 'Same item is already available in the shopping cart.',
+    });
   } catch (error) {
     return res.status(500).json({
       error:

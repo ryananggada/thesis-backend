@@ -9,7 +9,10 @@ router.post('/fetch', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ where: { username: username } });
+    const user = await User.findOne({
+      select: ['id', 'username', 'password'],
+      where: { username: username },
+    });
 
     if (user) {
       const passwordMatch = await bcrypt.compare(password, user.password);

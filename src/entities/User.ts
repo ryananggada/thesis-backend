@@ -3,9 +3,10 @@ import {
   BaseEntity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Profile } from './Profile';
 
 @Entity()
 export class User extends BaseEntity {
@@ -15,12 +16,10 @@ export class User extends BaseEntity {
   @Column({ nullable: false, unique: true })
   username!: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, select: false })
   password!: string;
 
-  @CreateDateColumn()
-  created_at!: Date;
-
-  @UpdateDateColumn()
-  updated_at!: Date;
+  @OneToOne(() => User, { cascade: true })
+  @JoinColumn()
+  profile!: Profile;
 }

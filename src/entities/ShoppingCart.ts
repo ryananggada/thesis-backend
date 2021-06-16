@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  Column,
 } from 'typeorm';
 import { Medicine } from './Medicine';
 import { User } from './User';
