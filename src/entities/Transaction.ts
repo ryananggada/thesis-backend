@@ -12,7 +12,7 @@ export class Transaction extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User, { cascade: true })
+  @ManyToOne(() => User)
   user!: User;
 
   @Column()

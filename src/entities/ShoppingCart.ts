@@ -14,11 +14,11 @@ export class ShoppingCart extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => User, { cascade: true })
+  @ManyToOne(() => User)
   @JoinColumn()
   user!: User;
 
-  @ManyToOne(() => Medicine, { cascade: true })
+  @ManyToOne(() => Medicine)
   @JoinColumn()
   medicine!: Medicine;
 }

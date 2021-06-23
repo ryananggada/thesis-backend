@@ -18,7 +18,7 @@ export class Profile extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, unique: true })
   email!: string;
 
   @Column({ nullable: false })
@@ -36,7 +36,7 @@ export class Profile extends BaseEntity {
   @Column({ nullable: false })
   address!: string;
 
-  @OneToOne(() => User, { cascade: true })
+  @OneToOne(() => User)
   @JoinColumn()
   user!: User;
 }

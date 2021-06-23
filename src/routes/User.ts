@@ -11,8 +11,8 @@ router.get('/:id', async (req, res) => {
     return res.json(user);
   } catch (error) {
     return res
-      .status(500)
-      .json({ error: 'Get user by ID failed, something went wrong.' });
+      .status(404)
+      .json({ message: 'Not found. Get by user ID failed.' });
   }
 });
 
@@ -32,6 +32,7 @@ router.post('/register', async (req, res) => {
     const user = User.create({ username, password });
     user.password = await bcrypt.hash(password, 10);
     await user.save();
+
     const profile = Profile.create({
       email,
       first_name,
@@ -42,46 +43,44 @@ router.post('/register', async (req, res) => {
     });
     profile.user = user;
     await profile.save();
+
     return res.status(201).json({ user, status: 'User successfully created!' });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: 'Registering user failed, something went wrong.' });
+    return res.status(400).json({
+      message:
+        'Registering user failed. Either some fields are not filled, or username or email was taken.',
+    });
   }
 });
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  try {
-    const user = await User.findOne({
-      relations: ['profile'],
-      where: { username: username },
-    });
-    const userPass = await User.findOne({
-      select: ['password'],
-      where: { username: username },
-    });
+  const user = await User.findOne({
+    where: { username: username },
+  });
 
-    if (user && userPass) {
-      const passwordMatch = await bcrypt.compare(password, userPass.password!);
+  const userPass = await User.findOne({
+    select: ['password'],
+    where: { username: username },
+  });
 
-      if (passwordMatch) {
-        return res.json({
-          valid: true,
-          message: 'Correct user credential.',
-          user,
-        });
-      } else {
-        return res.json({ valid: false, message: 'Wrong password!' });
-      }
+  if (user && userPass) {
+    const passwordMatch = await bcrypt.compare(password, userPass.password!);
+    const profile = await Profile.findOne({ where: { user: user.id } });
+
+    if (passwordMatch) {
+      return res.json({
+        valid: true,
+        message: 'Correct user credential.',
+        user,
+        profile,
+      });
     } else {
-      return res.json({ valid: false, messsage: 'User not found!' });
+      return res.json({ valid: false, message: 'Wrong password!' });
     }
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ error: 'Whole login function failed, something went wrong.' });
+  } else {
+    return res.status(404).json({ valid: false, messsage: 'User not found!' });
   }
 });
 

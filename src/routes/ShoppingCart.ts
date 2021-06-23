@@ -11,8 +11,8 @@ router.get('/user/:id', async (req, res) => {
     });
     return res.json(shoppingcart);
   } catch (error) {
-    return res.status(500).json({
-      error: 'Get shopping cart by user ID failed, something went wrong.',
+    return res.status(404).json({
+      error: 'Not found. Get shopping cart by user ID failed.',
     });
   }
 });
@@ -27,8 +27,8 @@ router.delete('/:id', async (req, res) => {
       shoppingcart,
     });
   } catch (error) {
-    return res.status(500).json({
-      error: 'Delete shopping cart by ID failed, something went wrong.',
+    return res.status(404).json({
+      error: 'Not found. Delete shopping cart by ID failed.',
     });
   }
 });
@@ -69,7 +69,7 @@ router.post('/add', async (req, res) => {
       });
     }
 
-    return res.json({
+    return res.status(406).json({
       error: 'Same item is already available in the shopping cart.',
     });
   } catch (error) {

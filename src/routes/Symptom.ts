@@ -20,8 +20,8 @@ router.get('/:id', async (req, res) => {
     return res.json(symptom);
   } catch (error) {
     return res
-      .status(500)
-      .json({ error: 'Get symptoms by ID failed, something went wrong.' });
+      .status(404)
+      .json({ error: 'Not found. Get symptoms by ID failed.' });
   }
 });
 

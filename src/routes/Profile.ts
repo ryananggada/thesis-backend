@@ -22,15 +22,13 @@ router.post('/fetch', async (req, res) => {
         return res.json(profile);
       } else {
         return res.json({
-          message: 'Failed to fetch profile, wrong password!',
+          message: 'Wrong password!',
         });
       }
-    } else {
-      return res.json({ message: 'Failed to fetch profile, user not found!' });
     }
   } catch (error) {
-    return res.status(500).json({
-      error: 'Fetch profile by user credentials failed, something went wrong.',
+    return res.status(404).json({
+      error: 'User not found.',
     });
   }
 });
@@ -44,8 +42,8 @@ router.get('/:id', async (req, res) => {
     return res.json(profile);
   } catch (error) {
     return res
-      .status(500)
-      .json({ error: 'Get profile by ID failed, something went wrong.' });
+      .status(404)
+      .json({ error: 'Not found. Get profile by ID failed.' });
   }
 });
 
@@ -62,8 +60,8 @@ router.put('/:id', async (req, res) => {
     return res.json(profile);
   } catch (error) {
     return res
-      .status(500)
-      .json({ error: 'Creating profile failed, something went wrong.' });
+      .status(400)
+      .json({ error: 'Editing profile failed, something went wrong.' });
   }
 });
 

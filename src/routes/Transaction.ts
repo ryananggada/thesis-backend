@@ -1,6 +1,7 @@
 import express from 'express';
 import { Transaction } from '../entities/Transaction';
 import { TransactionDetail } from '../entities/TransactionDetail';
+import { ShoppingCart } from '../entities/ShoppingCart';
 
 const router = express.Router();
 
@@ -12,8 +13,8 @@ router.get('/user/:id', async (req, res) => {
     });
     return res.json(transaction);
   } catch (error) {
-    return res.status(500).json({
-      error: 'Get transaction by user ID failed, something went wrong.',
+    return res.status(404).json({
+      error: 'Not found. Get transaction by user ID failed.',
     });
   }
 });
@@ -26,9 +27,8 @@ router.get('/detail/:id', async (req, res) => {
     });
     return res.json(detail);
   } catch (error) {
-    return res.status(500).json({
-      error:
-        'Get transaction detail by transaction ID failed, something went wrong.',
+    return res.status(404).json({
+      error: 'Not found. Get transaction detail by transaction ID failed.',
     });
   }
 });
@@ -42,11 +42,14 @@ router.post('/user', async (req, res) => {
       total,
       date,
     });
-    return res.status(201).json(transaction);
+    return res.status(201).json({
+      message: 'Successfully added transaction by user ID.',
+      transaction,
+    });
   } catch (error) {
     return res
-      .status(500)
-      .json({ error: 'Create transaction failed, smoething went wrong.' });
+      .status(400)
+      .json({ error: 'Failed to create transaction. Something went wrong.' });
   }
 });
 
@@ -54,16 +57,47 @@ router.post('/detail', async (req, res) => {
   const { transaction_id, medicine_id, subtotal } = req.body;
 
   try {
-    const detail = TransactionDetail.insert({
-      transaction: { id: transaction_id },
-      medicine: { id: medicine_id },
+    const detail = await TransactionDetail.insert({
+      transaction: { id: Number(transaction_id) },
+      medicine: { id: Number(medicine_id) },
       subtotal,
     });
-    return res.status(201).json(detail);
+    return res
+      .status(201)
+      .json({ message: 'Successfully add transaction detail.', detail });
   } catch (error) {
-    return res.status(500).json({
-      error: 'Create transaction detail failed, something went wrong.',
+    return res.status(400).json({
+      error: 'Failed to create transaction detail. Something went wrong.',
     });
+  }
+});
+
+router.post('/submit', async (req, res) => {
+  let { user_id, total, date, transaction_detail } = req.body;
+
+  try {
+    await Transaction.insert({
+      user: { id: Number(user_id) },
+      total,
+      date,
+    });
+
+    const transactionFetch = await Transaction.findOne({
+      where: { user: { id: Number(user_id) } },
+    });
+    const transactionId = transactionFetch!.id;
+    await ShoppingCart.delete({ user: { id: Number(user_id) } });
+    await transaction_detail.forEach((el: { transaction: Number }) => {
+      el.transaction = transactionId;
+    });
+    await TransactionDetail.insert(transaction_detail);
+    return res
+      .status(201)
+      .json({ message: 'Successfully finished the transaction.' });
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ error: 'Failed to finish transaction. Something went wrong.' });
   }
 });
 

@@ -25,8 +25,8 @@ router.get('/:id', async (req, res) => {
     return res.json(medicine);
   } catch (error) {
     return res
-      .status(500)
-      .json({ error: 'Get medicines by ID failed, something went wrong.' });
+      .status(404)
+      .json({ error: 'Not found. Get medicines by ID failed.' });
   }
 });
 
@@ -51,7 +51,7 @@ router.post('/check', async (req, res) => {
       });
       return res.status(201).json(medicines);
     } else {
-      return res.json({ message: 'Not found' });
+      return res.status(404).json({ message: 'Not found' });
     }
   } catch (error) {
     return res.status(500).json({

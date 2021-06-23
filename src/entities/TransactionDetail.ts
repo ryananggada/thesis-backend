@@ -14,11 +14,11 @@ export class TransactionDetail extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => Transaction, { cascade: true })
+  @ManyToOne(() => Transaction)
   @JoinColumn()
   transaction!: Transaction;
 
-  @ManyToOne(() => Medicine, { cascade: true })
+  @ManyToOne(() => Medicine)
   @JoinColumn()
   medicine!: Medicine;
 

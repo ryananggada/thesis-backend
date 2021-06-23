@@ -16,7 +16,7 @@ export class Medicine extends BaseEntity {
   @Column({ nullable: false })
   name!: string;
 
-  @ManyToOne(() => Symptom, { cascade: true })
+  @ManyToOne(() => Symptom)
   @JoinColumn()
   symptom!: Symptom;
 
