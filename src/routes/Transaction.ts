@@ -84,6 +84,7 @@ router.post('/submit', async (req, res) => {
 
     const transactionFetch = await Transaction.findOne({
       where: { user: { id: Number(user_id) } },
+      order: { id: 'DESC' },
     });
     const transactionId = transactionFetch!.id;
     await ShoppingCart.delete({ user: { id: Number(user_id) } });
